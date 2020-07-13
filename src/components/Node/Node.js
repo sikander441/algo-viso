@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import './Node.css'
 import Draggable from 'react-draggable';
+import { Line } from 'react-lineto';
+import { Button } from 'react-bootstrap';
 
 class Node extends Component{
     
@@ -11,7 +13,7 @@ class Node extends Component{
     }
 
     handleDrag = (e, ui) => {
-
+        this.props.updateCord(this.props.idx,ui.x,ui.y)
         this.setState({
             x: ui.x,
             y: ui.y,
@@ -38,11 +40,14 @@ class Node extends Component{
          fontSize:'24px'
       }
     return (
-        <Draggable    defaultPosition={{x: 2, y: 0}} bounds = "parent" onDrag={this.handleDrag}>
-        <div style={circleStyle}>
-            <span style={textStyle}>{this.props.name}</span>
+        <Draggable  disabled={this.props.disabled} defaultPosition={{x: 2, y: 0}} bounds = "parent" onDrag={this.handleDrag}>
+        <div style={circleStyle} onClick={ () => this.props.clickHandler(this.props.idx)}>
+        
+            <span style={textStyle}  >{this.props.name}</span>
         </div>
+        
         </Draggable>
+       
     )
 
     }
