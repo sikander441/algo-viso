@@ -23,12 +23,12 @@ class Node extends Component{
     render(){
         
         var circleStyle = {
-        padding:10,
+     
         display:"inline-block",
         background: `radial-gradient(circle at 20px 30px, ${this.props.bgColor}, #000)`,
         borderRadius: "50%",
-        width:30,
-        height:30,
+        width:75,
+        height:75,
         display:'flex',
         justifyContent:'center',
         alignItems:'center',

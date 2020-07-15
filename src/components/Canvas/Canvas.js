@@ -17,10 +17,16 @@ export default class Canvas extends Component{
      mouseY:0,
      EdgesBetweenNodes:[],
      selectedNode:0,
-     nodeSelected:false
+     nodeSelected:false,
+     yDiff:0
    }
  }
 
+ componentDidMount(){
+
+  console.log(window.screenLeft+' '+window.screenTop)
+   this.setState({yDiff:window.screenY}) 
+ }
  addEdge = (u,v) => {
   var edges=this.state.edges;
   if( edges[u].indexOf(v) === -1 )
@@ -51,8 +57,8 @@ export default class Canvas extends Component{
     var nodesList = this.state.nodes;
     nodesList[idx].x=x+30;
     nodesList[idx].y=y+40;
-      this.setState({nodes:nodesList})
-      this.createEdgeCords()
+    this.setState({nodes:nodesList})
+    this.createEdgeCords()
     
     // console.log('updated cords' + x+' ' + y);
   }
@@ -70,11 +76,10 @@ export default class Canvas extends Component{
     this.setState({nodeSelected:true,selectedNode:idx})
 
   }
-  _onMouseMove(evt) {
+  _onMouseMove = (evt) => {
+    console.log(evt.pageX+' '+evt.pageY)
     
-       var x = evt.screenX + 10 
-       var y = evt.screenY - 125
-    this.setState({ mouseX:x, mouseY: y});
+    this.setState({ mouseX: evt.pageX+10 , mouseY: evt.pageY+10 });
   }
   render()
   {
@@ -82,7 +87,7 @@ export default class Canvas extends Component{
     "#85FFC7", "#297373", "#FF8552", "#A40E4C"];
     var canvasStyle ={
         widht:'100%',
-        height:'500px',
+        height:'100vh',
         backgroundColor:'#d3d3d3',
         position:'relative',
         
@@ -132,11 +137,11 @@ export default class Canvas extends Component{
   
     return (
       
-        <div onMouseMove={this._onMouseMove.bind(this)} style={canvasStyle}>
+        <div onMouseMove={ this._onMouseMove } style={canvasStyle}>
           {this.state.EdgesBetweenNodes.map(edge =>{
-            return  <Line borderColor="#CAC740" borderWidth={3} x0={edge.x0} y0={edge.y0} x1={edge.x1} y1={edge.y1} />
+            return  <Line borderColor="#CAC740" borderWidth={5} x0={edge.x0} y0={edge.y0} x1={edge.x1} y1={edge.y1} />
           })}
-          {this.state.isDrawingLine && this.state.nodeSelected? ( <Line borderColor="#E2E095" borderWidth={5} borderStyle='dashed' x0={this.state.nodes[this.state.selectedNode].x} y0={this.state.nodes[this.state.selectedNode].y} x1={this.state.mouseX} y1={this.state.mouseY} />):null }
+          {this.state.isDrawingLine && this.state.nodeSelected? ( <Line borderColor="#E2E095" borderWidth={3} borderStyle='dashed' x0={this.state.nodes[this.state.selectedNode].x} y0={this.state.nodes[this.state.selectedNode].y} x1={this.state.mouseX} y1={this.state.mouseY} />):null }
           <center><Button variant="secondary" onClick={()=>createNode()}>Create a Node</Button>
           <Button variant="secondary" onClick={()=>disableNodeDrag()}>Create Links</Button>
           <Button variant="secondary" onClick={()=>releaseLock()}>Release Lock</Button>
