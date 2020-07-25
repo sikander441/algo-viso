@@ -2,8 +2,39 @@ import React, { Component } from 'react'
 import Node from '../Node/Node'
 import { Button } from 'react-bootstrap';
 import { Line } from 'react-lineto';
+import Edge from '../Edge/Edge'
 
 
+
+class Queue 
+{ 
+    constructor() 
+    { 
+        this.items = []; 
+    } 
+
+    enqueue(element) 
+    {     
+        this.items.push(element); 
+    } 
+    dequeue() 
+    { 
+      if(this.isEmpty()) 
+          return "Underflow"; 
+      return this.items.shift(); 
+    } 
+    front()
+    {
+      if(this.isEmpty()) 
+        return "No elements in Queue"; 
+      return this.items[0];
+    }
+    isEmpty() 
+    { 
+      return this.items.length === 0; 
+    } 
+                  
+} 
 
 export default class Canvas extends Component{
 
@@ -18,13 +49,14 @@ export default class Canvas extends Component{
      EdgesBetweenNodes:[],
      selectedNode:0,
      nodeSelected:false,
-     yDiff:0
+     yDiff:0,
    }
+   
  }
 
  componentDidMount(){
 
-  console.log(window.screenLeft+' '+window.screenTop)
+
    this.setState({yDiff:window.screenY}) 
  }
  addEdge = (u,v) => {
@@ -39,6 +71,7 @@ export default class Canvas extends Component{
  createEdgeCords = () =>{
   var edges = this.state.edges;
   var EdgesBetweenNodes = []
+  var edgeRefs = []
   const  nodes = this.state.nodes
  for(var i = 0; i < edges.length; i++ )
  {
@@ -46,11 +79,11 @@ export default class Canvas extends Component{
    var edgeArray = edges[i];
   //  console.log(nodes)
    for(var j = 0 ;j< edgeArray.length ; j++ ){
-     
-      EdgesBetweenNodes.push({x0:nodes[i].x,y0:nodes[i].y,x1:nodes[edgeArray[j]].x,y1:nodes[edgeArray[j]].y})
+      edgeRefs.push(React.createRef())
+      EdgesBetweenNodes.push(<Edge ref={edgeRefs[edgeRefs.length-1]} borderColor="#f69e7b" node1={ nodes[i].name } node2={nodes[edgeArray[j]].name} x0={nodes[i].x-20} y0={nodes[i].y} x1={nodes[edgeArray[j]].x-20} y1={nodes[edgeArray[j]].y} />)
    }
  }
- this.setState({EdgesBetweenNodes})
+ this.setState({EdgesBetweenNodes,edgeRefs})
 }
 
   handleCordChange = (idx,x,y)=>{
@@ -77,14 +110,12 @@ export default class Canvas extends Component{
 
   }
   _onMouseMove = (evt) => {
-    console.log(evt.pageX+' '+evt.pageY)
     
     this.setState({ mouseX: evt.pageX+10 , mouseY: evt.pageY+10 });
   }
   render()
   {
-    var colors = ["#d3ded3", "#E94F37", "#1C89BF", "#A1D363",
-    "#85FFC7", "#297373", "#FF8552", "#A40E4C"];
+    
     var canvasStyle ={
         widht:'100%',
         height:'100vh',
@@ -118,7 +149,7 @@ export default class Canvas extends Component{
     { 
       let nodeList = this.state.nodes;
       nodeList.push( {
-        bgColor:colors[this.state.nodes.length%7],
+        bgColor:"#ffe4e4",
         name:String.fromCharCode(nodeList.length+65),
         idx:nodeList.length,
         disabled:false,
@@ -131,7 +162,63 @@ export default class Canvas extends Component{
       this.setState({nodes:nodeList,edges});
      // console.log(nodeList);
     }
+    const delay = ms => new Promise(res => setTimeout(res, ms));
 
+    const calculateBfsNodeList = () => {
+      const edges = this.state.edges
+      console.log(edges)
+      const source = 0
+      var q = new Queue();
+      q.enqueue({first:source,second:source});
+      var visitedArray = Array(edges.length).fill(false);
+      var finalArray = []
+      visitedArray[source]=true
+      while(!q.isEmpty())
+      { 
+        finalArray.push(q.front())
+        const nodeNum = q.dequeue().second;
+        edges[nodeNum].forEach( edge => {
+          if(!visitedArray[edge]){
+            q.enqueue({first:nodeNum,second:edge});
+            visitedArray[edge]=true;
+          }
+        });
+      }
+      
+      console.log(finalArray)
+      return finalArray
+    }
+
+
+
+    const runBfs = async () =>{
+      const nodeList = calculateBfsNodeList()
+      var  EdgesBetweenNodes=this.state.EdgesBetweenNodes
+      var nodes = this.state.nodes
+      nodes[0].bgColor="#93b5e1"
+      this.setState({nodes}) 
+      for(var i=0; i< nodeList.length; i++ )
+      {
+        console.log(i)
+        console.log(nodeList[i].first+"--"+nodeList[i].second)
+        const node1 = nodes[nodeList[i].first].name
+        const node2 = nodes[nodeList[i].second].name
+        console.log(node1 + " : " + node2)
+        for(let j=0;j<EdgesBetweenNodes.length; j++){
+          if(  (node1 === EdgesBetweenNodes[j].props.node1 && node2 === EdgesBetweenNodes[j].props.node2) || (node2 === EdgesBetweenNodes[j].props.node1 && node1 === EdgesBetweenNodes[j].props.node2)  )
+            {
+                const nodes = this.state.nodes
+                this.state.edgeRefs[j].current.changeColor()   
+                await delay(1500)   
+                nodes[nodeList[i].second].bgColor="#93b5e1"
+                this.setState({nodes})  
+                await delay(500)
+            }
+        }
+      }
+
+      
+    }
     
    
   
@@ -139,12 +226,13 @@ export default class Canvas extends Component{
       
         <div onMouseMove={ this._onMouseMove } style={canvasStyle}>
           {this.state.EdgesBetweenNodes.map(edge =>{
-            return  <Line borderColor="#CAC740" borderWidth={5} x0={edge.x0} y0={edge.y0} x1={edge.x1} y1={edge.y1} />
+            return  edge
           })}
-          {this.state.isDrawingLine && this.state.nodeSelected? ( <Line borderColor="#E2E095" borderWidth={3} borderStyle='dashed' x0={this.state.nodes[this.state.selectedNode].x} y0={this.state.nodes[this.state.selectedNode].y} x1={this.state.mouseX} y1={this.state.mouseY} />):null }
+          {this.state.isDrawingLine && this.state.nodeSelected? ( <Line borderColor="#f69e7b" borderWidth={3} borderStyle='dashed' x0={this.state.nodes[this.state.selectedNode].x} y0={this.state.nodes[this.state.selectedNode].y} x1={this.state.mouseX} y1={this.state.mouseY} />):null }
           <center><Button variant="secondary" onClick={()=>createNode()}>Create a Node</Button>
           <Button variant="secondary" onClick={()=>disableNodeDrag()}>Create Links</Button>
           <Button variant="secondary" onClick={()=>releaseLock()}>Release Lock</Button>
+          <Button variant="secondary" onClick={()=>runBfs()}>RUN BFS</Button>
 
           </center>
         {this.state.nodes.map( node => {

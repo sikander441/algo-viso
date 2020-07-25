@@ -1,0 +1,15 @@
+.LineClass{
+    transition: border-top 1.5s ease;
+}
+
+.LineClass::before{
+    position: absolute;
+    content: '';
+    bottom: -15px;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left: 15px solid black;
+}

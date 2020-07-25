@@ -30,7 +30,8 @@ class Node extends Component{
         alignItems:'center',
         position:'absolute',
         top:this.props.y,
-        left:this.props.x
+        left:this.props.x,
+        color:'white',
       };
       var textStyle = {
          fontSize:'24px'
