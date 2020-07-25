@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/algo-viso/static/css/main.259f238d.chunk.css",
+    "main.js": "/algo-viso/static/js/main.72c4d219.chunk.js",
+    "main.js.map": "/algo-viso/static/js/main.72c4d219.chunk.js.map",
+    "runtime-main.js": "/algo-viso/static/js/runtime-main.96103aba.js",
+    "runtime-main.js.map": "/algo-viso/static/js/runtime-main.96103aba.js.map",
+    "static/js/2.5387f273.chunk.js": "/algo-viso/static/js/2.5387f273.chunk.js",
+    "static/js/2.5387f273.chunk.js.map": "/algo-viso/static/js/2.5387f273.chunk.js.map",
+    "index.html": "/algo-viso/index.html",
+    "precache-manifest.a9f14b15a4b0d3dd398c8efb6981e3ee.js": "/algo-viso/precache-manifest.a9f14b15a4b0d3dd398c8efb6981e3ee.js",
+    "service-worker.js": "/algo-viso/service-worker.js",
+    "static/css/main.259f238d.chunk.css.map": "/algo-viso/static/css/main.259f238d.chunk.css.map",
+    "static/js/2.5387f273.chunk.js.LICENSE.txt": "/algo-viso/static/js/2.5387f273.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.96103aba.js",
+    "static/js/2.5387f273.chunk.js",
+    "static/css/main.259f238d.chunk.css",
+    "static/js/main.72c4d219.chunk.js"
+  ]
+}
