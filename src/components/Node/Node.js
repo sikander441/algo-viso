@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import './Node.css'
 import Draggable from 'react-draggable';
-import { Line } from 'react-lineto';
-import { Button } from 'react-bootstrap';
 
 class Node extends Component{
     
@@ -23,8 +21,6 @@ class Node extends Component{
     render(){
         
         var circleStyle = {
-     
-        display:"inline-block",
         background: `radial-gradient(circle at 20px 30px, ${this.props.bgColor}, #000)`,
         borderRadius: "50%",
         width:75,
