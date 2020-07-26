@@ -1,14 +1,7 @@
-.node{
-    padding:10;
-    margin:20;
-    display:"inline-block";
-    background-color:"red";
-    border-radius:"50%";
-    width:100px;
-    height:100px;
-    color:white;
+.nodeClass
+{
+    transition: background 2s ease;
 }
-
 .container {
     padding:50px;
     background-color:#FFF;

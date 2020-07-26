@@ -11,10 +11,11 @@ class Node extends Component{
     }
 
     handleDrag = (e, ui) => {
-        this.props.updateCord(this.props.idx,ui.x,ui.y)
+        this.props.updateCord(this.props.idx,e.x,e.y)
+       
         this.setState({
-            x: ui.x,
-            y: ui.y,
+            x: e.x,
+            y: e.y,
         });
       };
 
@@ -23,8 +24,8 @@ class Node extends Component{
         var circleStyle = {
         background: `radial-gradient(circle at 20px 30px, ${this.props.bgColor}, #000)`,
         borderRadius: "50%",
-        width:75,
-        height:75,
+        width:70,
+        height:70,
         display:'flex',
         justifyContent:'center',
         alignItems:'center',
@@ -38,7 +39,7 @@ class Node extends Component{
       }
     return (
         <Draggable  disabled={this.props.disabled} defaultPosition={{x: 2, y: 0}} bounds = "parent" onDrag={this.handleDrag}>
-        <div style={circleStyle} onClick={ () => this.props.clickHandler(this.props.idx)}>
+        <div className="nodeClass" style={circleStyle} onClick={ () => this.props.clickHandler(this.props.idx)}>
         
             <span style={textStyle}  >{this.props.name}</span>
         </div>

@@ -80,7 +80,7 @@ export default class Canvas extends Component{
   //  console.log(nodes)
    for(var j = 0 ;j< edgeArray.length ; j++ ){
       edgeRefs.push(React.createRef())
-      EdgesBetweenNodes.push(<Edge ref={edgeRefs[edgeRefs.length-1]} borderColor="#f69e7b" node1={ nodes[i].name } node2={nodes[edgeArray[j]].name} x0={nodes[i].x-20} y0={nodes[i].y} x1={nodes[edgeArray[j]].x-20} y1={nodes[edgeArray[j]].y} />)
+      EdgesBetweenNodes.push(<Edge ref={edgeRefs[edgeRefs.length-1]} borderColor="#f69e7b" node1={ nodes[i].name } node2={nodes[edgeArray[j]].name} x0={nodes[i].x} y0={nodes[i].y} x1={nodes[edgeArray[j]].x } y1={nodes[edgeArray[j]].y} />)
    }
  }
  this.setState({EdgesBetweenNodes,edgeRefs})
@@ -88,8 +88,8 @@ export default class Canvas extends Component{
 
   handleCordChange = (idx,x,y)=>{
     var nodesList = this.state.nodes;
-    nodesList[idx].x=x+30;
-    nodesList[idx].y=y+40;
+    nodesList[idx].x=x;
+    nodesList[idx].y=y;
     this.setState({nodes:nodesList})
     this.createEdgeCords()
     
@@ -212,7 +212,7 @@ export default class Canvas extends Component{
                 await delay(1500)   
                 nodes[nodeList[i].second].bgColor="#93b5e1"
                 this.setState({nodes})  
-                await delay(500)
+                await delay(200)
             }
         }
       }
