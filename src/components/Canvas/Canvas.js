@@ -36,6 +36,35 @@ class Queue
                   
 } 
 
+class Stack 
+{ 
+    constructor() 
+    { 
+        this.items = []; 
+    } 
+
+    push(element) 
+    {     
+        this.items.push(element); 
+    } 
+    pop() 
+    { 
+      if(this.isEmpty()) 
+          return "Underflow"; 
+      return this.items.pop(); 
+    } 
+    front()
+    {
+      if(this.isEmpty()) 
+        return "No elements in Queue"; 
+      return this.items[this.items.length-1];
+    }
+    isEmpty() 
+    { 
+      return this.items.length === 0; 
+    } 
+                  
+} 
 export default class Canvas extends Component{
 
  constructor(props){
@@ -166,7 +195,6 @@ export default class Canvas extends Component{
 
     const calculateBfsNodeList = () => {
       const edges = this.state.edges
-      console.log(edges)
       const source = 0
       var q = new Queue();
       q.enqueue({first:source,second:source});
@@ -184,15 +212,46 @@ export default class Canvas extends Component{
           }
         });
       }
-      
-      console.log(finalArray)
       return finalArray
     }
 
+    const calculateDfsNodeList = () => {
+      const edges = this.state.edges
+      const  source = 0
+      var st = new Stack();
+      st.push({first:source,second:source})
+      var visitedArray = Array(edges.length).fill(false);
+      var finalArray = []
+      visitedArray[source]=true
+      while(!st.isEmpty())
+      {
+        finalArray.push(st.front())
+        visitedArray[st.front().second]=true;
+        const nodeNum = st.pop().second;
+        edges[nodeNum].forEach( edge => {
+          if(!visitedArray[edge]){
+            st.push({first:nodeNum,second:edge});
+          }
+        })
+      }
+
+      console.log(finalArray)
+      return finalArray
+
+    }
 
 
     const runBfs = async () =>{
       const nodeList = calculateBfsNodeList()
+      animateAlgorithm(nodeList)
+    }
+
+    const runDfs = async () =>{
+      const nodeList = calculateDfsNodeList()
+      animateAlgorithm(nodeList)
+    }
+    const animateAlgorithm = async (nodeList) =>{
+     
       var  EdgesBetweenNodes=this.state.EdgesBetweenNodes
       var nodes = this.state.nodes
       nodes[0].bgColor="#93b5e1"
@@ -205,7 +264,7 @@ export default class Canvas extends Component{
         const node2 = nodes[nodeList[i].second].name
         console.log(node1 + " : " + node2)
         for(let j=0;j<EdgesBetweenNodes.length; j++){
-          if(  (node1 === EdgesBetweenNodes[j].props.node1 && node2 === EdgesBetweenNodes[j].props.node2) || (node2 === EdgesBetweenNodes[j].props.node1 && node1 === EdgesBetweenNodes[j].props.node2)  )
+          if(  (node1 === EdgesBetweenNodes[j].props.node1 && node2 === EdgesBetweenNodes[j].props.node2))
             {
                 const nodes = this.state.nodes
                 this.state.edgeRefs[j].current.changeColor()   
@@ -220,7 +279,7 @@ export default class Canvas extends Component{
       
     }
     
-   
+
   
     return (
       
@@ -229,10 +288,15 @@ export default class Canvas extends Component{
             return  edge
           })}
           {this.state.isDrawingLine && this.state.nodeSelected? ( <Line borderColor="#f69e7b" borderWidth={3} borderStyle='dashed' x0={this.state.nodes[this.state.selectedNode].x} y0={this.state.nodes[this.state.selectedNode].y} x1={this.state.mouseX} y1={this.state.mouseY} />):null }
-          <center><Button variant="secondary" onClick={()=>createNode()}>Create a Node</Button>
-          <Button variant="secondary" onClick={()=>disableNodeDrag()}>Create Links</Button>
-          <Button variant="secondary" onClick={()=>releaseLock()}>Release Lock</Button>
-          <Button variant="secondary" onClick={()=>runBfs()}>RUN BFS</Button>
+          <center>
+          <div className="btn-group">
+            <Button  onClick={()=>createNode()}>Create a Node</Button>
+            <Button   onClick={()=>disableNodeDrag()}>Draw Edges</Button>
+            <Button  onClick={()=>releaseLock()}>Release Lock</Button>
+            <Button  onClick={()=>runBfs()}>RUN BFS</Button>
+            <Button  onClick={()=>runDfs()}>RUN DFS</Button>
+          </div>
+         
 
           </center>
         {this.state.nodes.map( node => {
