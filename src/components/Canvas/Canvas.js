@@ -3,68 +3,12 @@ import Node from '../Node/Node'
 import { Button } from 'react-bootstrap';
 import { Line } from 'react-lineto';
 import Edge from '../Edge/Edge'
+import Stack from '../../utils/Stack'
+import Queue from '../../utils/Queue'
+import './Canvas.css'
 
 
-
-class Queue 
-{ 
-    constructor() 
-    { 
-        this.items = []; 
-    } 
-
-    enqueue(element) 
-    {     
-        this.items.push(element); 
-    } 
-    dequeue() 
-    { 
-      if(this.isEmpty()) 
-          return "Underflow"; 
-      return this.items.shift(); 
-    } 
-    front()
-    {
-      if(this.isEmpty()) 
-        return "No elements in Queue"; 
-      return this.items[0];
-    }
-    isEmpty() 
-    { 
-      return this.items.length === 0; 
-    } 
-                  
-} 
-
-class Stack 
-{ 
-    constructor() 
-    { 
-        this.items = []; 
-    } 
-
-    push(element) 
-    {     
-        this.items.push(element); 
-    } 
-    pop() 
-    { 
-      if(this.isEmpty()) 
-          return "Underflow"; 
-      return this.items.pop(); 
-    } 
-    front()
-    {
-      if(this.isEmpty()) 
-        return "No elements in Queue"; 
-      return this.items[this.items.length-1];
-    }
-    isEmpty() 
-    { 
-      return this.items.length === 0; 
-    } 
-                  
-} 
+ 
 export default class Canvas extends Component{
 
  constructor(props){
@@ -82,6 +26,14 @@ export default class Canvas extends Component{
    }
    
  }
+ resetNode = () => {
+  var nodes = this.state.nodes
+  nodes.forEach ( (node)=> {
+    node.bgColor = "#ffe4e4"
+  })
+
+  this.setState({nodes})
+}
 
  componentDidMount(){
 
@@ -239,8 +191,11 @@ export default class Canvas extends Component{
       return finalArray
 
     }
-
-
+   
+    const resetGraph = () => {
+      this.updateEdges();
+      this.resetNode();
+    }
     const runBfs = async () =>{
       const nodeList = calculateBfsNodeList()
       animateAlgorithm(nodeList)
@@ -290,11 +245,12 @@ export default class Canvas extends Component{
           {this.state.isDrawingLine && this.state.nodeSelected? ( <Line borderColor="#f69e7b" borderWidth={3} borderStyle='dashed' x0={this.state.nodes[this.state.selectedNode].x} y0={this.state.nodes[this.state.selectedNode].y} x1={this.state.mouseX} y1={this.state.mouseY} />):null }
           <center>
           <div className="btn-group">
-            <Button  onClick={()=>createNode()}>Create a Node</Button>
-            <Button   onClick={()=>disableNodeDrag()}>Draw Edges</Button>
-            <Button  onClick={()=>releaseLock()}>Release Lock</Button>
-            <Button  onClick={()=>runBfs()}>RUN BFS</Button>
-            <Button  onClick={()=>runDfs()}>RUN DFS</Button>
+            <Button  className ="btn-primary" onClick={()=>createNode()}>Create a Node</Button>
+            <Button  className ="btn-secondary" onClick={()=>disableNodeDrag()}>Draw Edges</Button>
+            <Button  className ="btn-secondary" onClick={()=>releaseLock()}>Release Lock</Button>
+            <Button  className ="btn-success" onClick={()=>runBfs()}>RUN BFS</Button>
+            <Button  className ="btn-success" onClick={()=>runDfs()}>RUN DFS</Button>
+            <Button  className ="btn-warning" onClick={()=>resetGraph()}>Reset Graph</Button>
           </div>
          
 
